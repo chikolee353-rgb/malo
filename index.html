@@ -14,6 +14,7 @@
 			<button data-tab="gallery">Photos</button>
 			<button data-tab="listen">Music</button>
 			<button data-tab="videos">Videos</button>
+			<button data-tab="community">Community</button>
 			<button data-tab="advert">Advertise</button>
 			<button data-tab="contact">Contact</button>
 		</nav>
@@ -32,7 +33,7 @@
 			<div class="hero-left">
 				<h1>POP MALVIN TV</h1>
 				<p class="tag">Music • Promotions • Advertising</p>
-				<p class="lead">Showcase your brand. Promote your business. Enjoy great music.</p>
+				<p class="lead">Showcase your brand. Promote your business. Enjoy great music and media uploads from the community.</p>
 				<div class="hero-ctas">
 					<button class="cta listen" data-tab="listen">Listen to Music</button>
 					<button class="cta gallery" data-tab="gallery">View Gallery</button>
@@ -46,7 +47,7 @@
 			</div>
 		</section>
 
-		<section id="cards" class="card-row">
+		<section id="gallery" class="tab">
 			<div class="card">
 				<h3>My Photos</h3>
 				<div class="card-body">
@@ -54,7 +55,9 @@
 					<div id="photo-grid" class="grid"></div>
 				</div>
 			</div>
+		</section>
 
+		<section id="listen" class="tab">
 			<div class="card">
 				<h3>Music</h3>
 				<div class="card-body">
@@ -62,7 +65,9 @@
 					<div id="music-list" class="list"></div>
 				</div>
 			</div>
+		</section>
 
+		<section id="advert" class="tab">
 			<div class="card contact-card">
 				<h3>Advertise Your Business</h3>
 				<div class="card-body">
@@ -97,6 +102,12 @@
 			<div id="video-list" class="list"></div>
 		</section>
 
+		<section id="community" class="tab">
+			<h2>Community Feed</h2>
+			<p>Like and comment on uploaded music, photos, and videos.</p>
+			<div id="community-feed" class="community-feed"></div>
+		</section>
+
 		<section id="home" class="tab active info-section">
 			<div class="info-left">
 				<h2>Contact</h2>
@@ -105,7 +116,9 @@
 			</div>
 			<div class="info-right">
 				<h2>Featured</h2>
+				<div id="featured-music" class="grid"></div>
 				<div id="featured-photos" class="grid"></div>
+				<div id="featured-videos" class="grid"></div>
 			</div>
 		</section>
 	</main>

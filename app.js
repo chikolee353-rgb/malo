@@ -49,11 +49,11 @@ async function handleMusic(files){
       try{
         const form=new FormData();form.append('file',f)
         const res=await fetch(`/api/upload?type=music`,{method:'POST',body:form})
-        if(res.ok){const json=await res.json();tracks.push({id:Date.now()+Math.random(),name:json.name,url:json.url});continue}
+        if(res.ok){const json=await res.json();tracks.push({id:Date.now()+Math.random(),name:json.name,url:json.url,createdAt:Date.now(),likes:0,comments:[]});continue}
       }catch(e){console.warn('Upload failed, falling back to local',e)}
     }
     const data=await fileToDataURL(f)
-    tracks.push({id:Date.now()+Math.random(),name:f.name,data})
+    tracks.push({id:Date.now()+Math.random(),name:f.name,data,createdAt:Date.now(),likes:0,comments:[]})
   }
   storage.set(STORAGE_KEYS.MUSIC,tracks);renderMusic();renderFeatured()
 }
@@ -62,9 +62,22 @@ function renderMusic(){
   const list=$("#music-list");list.innerHTML='';
   const tracks=storage.get(STORAGE_KEYS.MUSIC)
   tracks.forEach(t=>{
-    const el=document.createElement('div')
+    const el=document.createElement('div');el.className='media-item'
     const src = t.data || t.url || ''
-    el.innerHTML=`<strong>${t.name}</strong><br><audio controls src="${src}"></audio>`
+    el.innerHTML=`
+      <div class="media-header"><strong>${t.name}</strong><span class="type-badge">Music</span></div>
+      <div class="media-wrapper"><audio controls src="${src}"></audio></div>
+      <div class="item-actions">
+        <button class="like-button" data-id="${t.id}">Like <span>${t.likes||0}</span></button>
+        <button class="comment-toggle" data-id="${t.id}">Comments <span>${(t.comments||[]).length}</span></button>
+      </div>
+      <div class="comments hidden" id="comments-${t.id}">
+        <div class="comment-list">${(t.comments||[]).map(c=>`<div class="comment"><strong>${c.name}:</strong> ${c.text}</div>`).join('')}</div>
+        <form class="comment-form" data-id="${t.id}">
+          <input type="text" name="comment" placeholder="Add a comment" autocomplete="off" />
+          <button type="submit">Post</button>
+        </form>
+      </div>`
     list.appendChild(el)
   })
 }
@@ -77,11 +90,11 @@ async function handlePhotos(files){
       try{
         const form=new FormData();form.append('file',f)
         const res=await fetch(`/api/upload?type=photos`,{method:'POST',body:form})
-        if(res.ok){const json=await res.json();photos.push({id:Date.now()+Math.random(),name:json.name,url:json.url});continue}
+        if(res.ok){const json=await res.json();photos.push({id:Date.now()+Math.random(),name:json.name,url:json.url,createdAt:Date.now(),likes:0,comments:[]});continue}
       }catch(e){console.warn('Photo upload failed, using local fallback',e)}
     }
     const data=await fileToDataURL(f)
-    photos.push({id:Date.now()+Math.random(),name:f.name,data})
+    photos.push({id:Date.now()+Math.random(),name:f.name,data,createdAt:Date.now(),likes:0,comments:[]})
   }
   storage.set(STORAGE_KEYS.PHOTOS,photos);renderPhotos();renderFeatured()
 }
@@ -90,8 +103,22 @@ function renderPhotos(){
   const grid=$("#photo-grid");grid.innerHTML=''
   const photos=storage.get(STORAGE_KEYS.PHOTOS)
   photos.forEach(p=>{
-    const img=document.createElement('img');img.src=p.data || p.url;img.alt=p.name
-    grid.appendChild(img)
+    const item=document.createElement('div');item.className='media-item'
+    item.innerHTML=`
+      <div class="media-header"><strong>${p.name}</strong><span class="type-badge">Photo</span></div>
+      <div class="media-wrapper"><img class="media-photo" src="${p.data || p.url}" alt="${p.name}" /></div>
+      <div class="item-actions">
+        <button class="like-button" data-id="${p.id}">Like <span>${p.likes||0}</span></button>
+        <button class="comment-toggle" data-id="${p.id}">Comments <span>${(p.comments||[]).length}</span></button>
+      </div>
+      <div class="comments hidden" id="comments-${p.id}">
+        <div class="comment-list">${(p.comments||[]).map(c=>`<div class="comment"><strong>${c.name}:</strong> ${c.text}</div>`).join('')}</div>
+        <form class="comment-form" data-id="${p.id}">
+          <input type="text" name="comment" placeholder="Add a comment" autocomplete="off" />
+          <button type="submit">Post</button>
+        </form>
+      </div>`
+    grid.appendChild(item)
   })
 }
 
@@ -103,11 +130,11 @@ async function handleVideos(files){
       try{
         const form=new FormData();form.append('file',f)
         const res=await fetch(`/api/upload?type=videos`,{method:'POST',body:form})
-        if(res.ok){const json=await res.json();videos.push({id:Date.now()+Math.random(),name:json.name,url:json.url});continue}
+        if(res.ok){const json=await res.json();videos.push({id:Date.now()+Math.random(),name:json.name,url:json.url,createdAt:Date.now(),likes:0,comments:[]});continue}
       }catch(e){console.warn('Video upload failed, using local fallback',e)}
     }
     const data=await fileToDataURL(f)
-    videos.push({id:Date.now()+Math.random(),name:f.name,data})
+    videos.push({id:Date.now()+Math.random(),name:f.name,data,createdAt:Date.now(),likes:0,comments:[]})
   }
   storage.set(STORAGE_KEYS.VIDEOS,videos);renderVideos();renderFeatured()
 }
@@ -116,9 +143,22 @@ function renderVideos(){
   const list=$("#video-list");list.innerHTML=''
   const videos=storage.get(STORAGE_KEYS.VIDEOS)
   videos.forEach(v=>{
-    const el=document.createElement('div')
+    const el=document.createElement('div');el.className='media-item'
     const src = v.data || v.url || ''
-    el.innerHTML=`<strong>${v.name}</strong><br><video controls width="320" src="${src}"></video>`
+    el.innerHTML=`
+      <div class="media-header"><strong>${v.name}</strong><span class="type-badge">Video</span></div>
+      <div class="media-wrapper"><video controls width="100%" src="${src}"></video></div>
+      <div class="item-actions">
+        <button class="like-button" data-id="${v.id}">Like <span>${v.likes||0}</span></button>
+        <button class="comment-toggle" data-id="${v.id}">Comments <span>${(v.comments||[]).length}</span></button>
+      </div>
+      <div class="comments hidden" id="comments-${v.id}">
+        <div class="comment-list">${(v.comments||[]).map(c=>`<div class="comment"><strong>${c.name}:</strong> ${c.text}</div>`).join('')}</div>
+        <form class="comment-form" data-id="${v.id}">
+          <input type="text" name="comment" placeholder="Add a comment" autocomplete="off" />
+          <button type="submit">Post</button>
+        </form>
+      </div>`
     list.appendChild(el)
   })
 }
@@ -127,12 +167,89 @@ function renderVideos(){
 function renderFeatured(){
   const fm=$("#featured-music");fm.innerHTML=''
   storage.get(STORAGE_KEYS.MUSIC).slice(0,3).forEach(t=>{
-    const d=document.createElement('div');d.innerHTML=`<strong>${t.name}</strong><br><audio controls src="${t.data}"></audio>`;fm.appendChild(d)
+    const d=document.createElement('div');d.className='media-item';d.innerHTML=`<div class="media-header"><strong>${t.name}</strong><span class="type-badge">Music</span></div><div class="media-wrapper"><audio controls src="${t.data || t.url}"></audio></div>`;fm.appendChild(d)
   })
   const fp=$("#featured-photos");fp.innerHTML=''
-  storage.get(STORAGE_KEYS.PHOTOS).slice(0,6).forEach(p=>{const img=document.createElement('img');img.src=p.data;fp.appendChild(img)})
+  storage.get(STORAGE_KEYS.PHOTOS).slice(0,6).forEach(p=>{const d=document.createElement('div');d.className='media-item';d.innerHTML=`<div class="media-header"><strong>${p.name}</strong><span class="type-badge">Photo</span></div><div class="media-wrapper"><img class="media-photo" src="${p.data || p.url}" alt="${p.name}" /></div>`;fp.appendChild(d)})
   const fv=$("#featured-videos");fv.innerHTML=''
-  storage.get(STORAGE_KEYS.VIDEOS).slice(0,3).forEach(v=>{const d=document.createElement('div');d.innerHTML=`<strong>${v.name}</strong><br><video controls width="320" src="${v.data}"></video>`;fv.appendChild(d)})
+  storage.get(STORAGE_KEYS.VIDEOS).slice(0,3).forEach(v=>{const d=document.createElement('div');d.className='media-item';d.innerHTML=`<div class="media-header"><strong>${v.name}</strong><span class="type-badge">Video</span></div><div class="media-wrapper"><video controls width="100%" src="${v.data || v.url}"></video></div>`;fv.appendChild(d)})
+}
+
+function updateStorageItem(key,item){
+  const items = storage.get(key).map(x=>x.id===item.id?item:x)
+  storage.set(key,items)
+}
+
+function normalizeStorageList(key){
+  const items = storage.get(key).map(item=>({
+    ...item,
+    createdAt:item.createdAt||Date.now(),
+    likes:item.likes||0,
+    comments:Array.isArray(item.comments)?item.comments:[]
+  }))
+  storage.set(key, items)
+}
+
+function toggleLike(id){
+  [STORAGE_KEYS.MUSIC,STORAGE_KEYS.PHOTOS,STORAGE_KEYS.VIDEOS].forEach(key=>{
+    const items=storage.get(key)
+    const item=items.find(x=>String(x.id)===String(id))
+    if(item){
+      item.likes=(item.likes||0)+1
+      updateStorageItem(key,item)
+    }
+  })
+  renderMusic();renderPhotos();renderVideos();renderCommunity();renderFeatured()
+}
+
+function toggleComments(id){
+  const section=document.getElementById(`comments-${id}`)
+  if(section) section.classList.toggle('hidden')
+}
+
+function addComment(id,text){
+  [STORAGE_KEYS.MUSIC,STORAGE_KEYS.PHOTOS,STORAGE_KEYS.VIDEOS].forEach(key=>{
+    const items=storage.get(key)
+    const item=items.find(x=>String(x.id)===String(id))
+    if(item){
+      item.comments=item.comments||[]
+      item.comments.push({name:'Guest',text})
+      updateStorageItem(key,item)
+    }
+  })
+  renderMusic();renderPhotos();renderVideos();renderCommunity();renderFeatured()
+}
+
+function renderCommunity(){
+  const feed=$("#community-feed");feed.innerHTML=''
+  const combined=[
+    ...storage.get(STORAGE_KEYS.MUSIC).map(i=>({...i,type:'Music'})),
+    ...storage.get(STORAGE_KEYS.PHOTOS).map(i=>({...i,type:'Photo'})),
+    ...storage.get(STORAGE_KEYS.VIDEOS).map(i=>({...i,type:'Video'}))
+  ].sort((a,b)=>b.createdAt - a.createdAt)
+  combined.forEach(item=>{
+    const src=item.data||item.url||''
+    let mediaHTML=''
+    if(item.type==='Music') mediaHTML=`<audio controls src="${src}"></audio>`
+    else if(item.type==='Photo') mediaHTML=`<img class="media-photo" src="${src}" alt="${item.name}" />`
+    else if(item.type==='Video') mediaHTML=`<video controls width="100%" src="${src}"></video>`
+    const el=document.createElement('div');el.className='media-item'
+    el.innerHTML=`
+      <div class="media-header"><strong>${item.name}</strong><span class="type-badge">${item.type}</span></div>
+      <div class="media-wrapper">${mediaHTML}</div>
+      <div class="item-actions">
+        <button class="like-button" data-id="${item.id}">Like <span>${item.likes||0}</span></button>
+        <button class="comment-toggle" data-id="${item.id}">Comments <span>${(item.comments||[]).length}</span></button>
+      </div>
+      <div class="comments hidden" id="comments-${item.id}">
+        <div class="comment-list">${(item.comments||[]).map(c=>`<div class="comment"><strong>${c.name}:</strong> ${c.text}</div>`).join('')}</div>
+        <form class="comment-form" data-id="${item.id}">
+          <input type="text" name="comment" placeholder="Add a comment" autocomplete="off" />
+          <button type="submit">Post</button>
+        </form>
+      </div>`
+    feed.appendChild(el)
+  })
 }
 
 // Advertisement / Cart
@@ -185,13 +302,31 @@ function init(){
     if(tab) activateTabByName(tab)
   }))
 
+  // comment and like actions
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.like-button')
+    if(btn){
+      e.preventDefault();const id=btn.dataset.id;toggleLike(id);return
+    }
+    const cbtn=e.target.closest('.comment-toggle')
+    if(cbtn){
+      e.preventDefault();const id=cbtn.dataset.id;toggleComments(id);return
+    }
+  })
+  document.addEventListener('submit',e=>{
+    const form=e.target.closest('.comment-form')
+    if(!form) return
+    e.preventDefault();const id=form.dataset.id;const input=form.querySelector('input[name="comment"]')
+    if(input && input.value.trim()){addComment(id,input.value.trim());input.value='';}
+  })
+
   // load existing
-  storage.set(STORAGE_KEYS.MUSIC, storage.get(STORAGE_KEYS.MUSIC))
-  storage.set(STORAGE_KEYS.PHOTOS, storage.get(STORAGE_KEYS.PHOTOS))
-  storage.set(STORAGE_KEYS.VIDEOS, storage.get(STORAGE_KEYS.VIDEOS))
+  normalizeStorageList(STORAGE_KEYS.MUSIC)
+  normalizeStorageList(STORAGE_KEYS.PHOTOS)
+  normalizeStorageList(STORAGE_KEYS.VIDEOS)
   storage.set(STORAGE_KEYS.CART, storage.get(STORAGE_KEYS.CART))
 
-  renderMusic();renderPhotos();renderVideos();renderCart();renderFeatured()
+  renderMusic();renderPhotos();renderVideos();renderCommunity();renderCart();renderFeatured()
 }
 
 document.addEventListener('DOMContentLoaded',init)
