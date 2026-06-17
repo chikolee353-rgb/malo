@@ -122,6 +122,23 @@ function renderPhotos(){
   })
 }
 
+function renderYoutubeMusic(){
+  const container = $("#youtube-music")
+  if(!container) return
+  const videoIds = [
+    'qq8QmeHBnV4',
+    'i2nvth0kMkw',
+    '9NQ5j0IYNoA',
+    'B397zd4EXUc',
+    'PXVvXc_0jHk'
+  ]
+  container.innerHTML = videoIds.map(id => `
+    <div class="youtube-card">
+      <iframe src="https://www.youtube.com/embed/${id}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  `).join('')
+}
+
 // Videos
 async function handleVideos(files){
   const videos=storage.get(STORAGE_KEYS.VIDEOS)
@@ -346,7 +363,7 @@ function init(){
   normalizeStorageList(STORAGE_KEYS.VIDEOS)
   storage.set(STORAGE_KEYS.CART, storage.get(STORAGE_KEYS.CART))
 
-  renderMusic();renderPhotos();renderVideos();renderCommunity();renderCart();renderFeatured()
+  renderMusic();renderPhotos();renderVideos();renderCommunity();renderCart();renderFeatured();renderYoutubeMusic()
 }
 
 document.addEventListener('DOMContentLoaded',init)

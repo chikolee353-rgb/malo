@@ -39,6 +39,13 @@ main{padding:20px;max-width:1200px;margin:10px auto}
 .card-body{margin-top:10px}
 .grid{display:flex;flex-wrap:wrap;gap:8px}
 .grid img{width:110px;height:80px;object-fit:cover;border-radius:6px}
+.folder-gallery{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.folder-gallery img{width:100px;height:70px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.12)}
+.youtube-section{margin-top:22px}
+.youtube-section h4{margin:0 0 10px;color:var(--accent)}
+.youtube-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.youtube-card{background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden}
+.youtube-card iframe{width:100%;height:220px;border:0}
 .tab{display:none}
 .tab.active{display:block}
 .price-list{display:grid;gap:10px;margin-bottom:16px}
