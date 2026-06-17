@@ -44,8 +44,14 @@ main{padding:20px;max-width:1200px;margin:10px auto}
 .youtube-section{margin-top:22px}
 .youtube-section h4{margin:0 0 10px;color:var(--accent)}
 .youtube-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
-.youtube-card{background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden}
-.youtube-card iframe{width:100%;height:220px;border:0}
+.youtube-card{background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;transition:transform 0.3s ease,box-shadow 0.3s ease}
+.youtube-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(255,212,0,0.2)}
+.youtube-thumbnail{position:relative;width:100%;padding-bottom:56.25%;overflow:hidden;background:#000}
+.youtube-thumbnail img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.play-button{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;width:60px;height:60px;background:rgba(255,0,0,0.8);border-radius:50%;opacity:0.9;transition:opacity 0.3s ease}
+.youtube-card:hover .play-button{opacity:1}
+.featured-videos-section{padding:28px;margin:20px 0;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+.featured-videos-section h2{color:var(--accent);margin-top:0}
 .tab{display:none}
 .tab.active{display:block}
 .price-list{display:grid;gap:10px;margin-bottom:16px}

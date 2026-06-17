@@ -130,11 +130,40 @@ function renderYoutubeMusic(){
     'i2nvth0kMkw',
     '9NQ5j0IYNoA',
     'B397zd4EXUc',
-    'PXVvXc_0jHk'
+    'PXVvXc_0jHk',
+    'lkDNX-BfQto'
   ]
   container.innerHTML = videoIds.map(id => `
-    <div class="youtube-card">
-      <iframe src="https://www.youtube.com/embed/${id}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <div class="youtube-card" onclick="window.open('https://www.youtube.com/watch?v=${id}', '_blank')" style="cursor:pointer;">
+      <div class="youtube-thumbnail">
+        <img src="https://img.youtube.com/vi/${id}/maxresdefault.jpg" alt="Video thumbnail" />
+        <div class="play-button"><svg width="48" height="48" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+    </div>
+  `).join('')
+}
+
+function renderFeaturedYoutubeVideos(){
+  const container = $("#featured-youtube-videos")
+  if(!container) return
+  const videoIds = [
+    'qq8QmeHBnV4',
+    'i2nvth0kMkw',
+    '9NQ5j0IYNoA',
+    'B397zd4EXUc',
+    'PXVvXc_0jHk',
+    'lkDNX-BfQto',
+    'zTNfJDmzOjU',
+    'UjX1I-llGx8',
+    'iNfQoPGtYnc',
+    'soq6JXVGycM'
+  ]
+  container.innerHTML = videoIds.map(id => `
+    <div class="youtube-card" onclick="window.open('https://www.youtube.com/watch?v=${id}', '_blank')" style="cursor:pointer;">
+      <div class="youtube-thumbnail">
+        <img src="https://img.youtube.com/vi/${id}/maxresdefault.jpg" alt="Video thumbnail" />
+        <div class="play-button"><svg width="48" height="48" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
     </div>
   `).join('')
 }
@@ -363,7 +392,7 @@ function init(){
   normalizeStorageList(STORAGE_KEYS.VIDEOS)
   storage.set(STORAGE_KEYS.CART, storage.get(STORAGE_KEYS.CART))
 
-  renderMusic();renderPhotos();renderVideos();renderCommunity();renderCart();renderFeatured();renderYoutubeMusic()
+  renderMusic();renderPhotos();renderVideos();renderCommunity();renderCart();renderFeatured();renderYoutubeMusic();renderFeaturedYoutubeVideos()
 }
 
 document.addEventListener('DOMContentLoaded',init)
