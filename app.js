@@ -166,13 +166,21 @@ function renderVideos(){
 // Featured on home
 function renderFeatured(){
   const fm=$("#featured-music");fm.innerHTML=''
-  storage.get(STORAGE_KEYS.MUSIC).slice(0,3).forEach(t=>{
+  const musicItems=storage.get(STORAGE_KEYS.MUSIC).slice(0,3)
+  if(musicItems.length===0){fm.innerHTML='<div class="media-item"><div class="media-header"><strong>No featured music yet</strong></div><div class="media-wrapper"><p>Upload music in the Music tab to see it here.</p></div></div>'}
+  else{musicItems.forEach(t=>{
     const d=document.createElement('div');d.className='media-item';d.innerHTML=`<div class="media-header"><strong>${t.name}</strong><span class="type-badge">Music</span></div><div class="media-wrapper"><audio controls src="${t.data || t.url}"></audio></div>`;fm.appendChild(d)
-  })
+  })}
+
   const fp=$("#featured-photos");fp.innerHTML=''
-  storage.get(STORAGE_KEYS.PHOTOS).slice(0,6).forEach(p=>{const d=document.createElement('div');d.className='media-item';d.innerHTML=`<div class="media-header"><strong>${p.name}</strong><span class="type-badge">Photo</span></div><div class="media-wrapper"><img class="media-photo" src="${p.data || p.url}" alt="${p.name}" /></div>`;fp.appendChild(d)})
+  const photoItems=storage.get(STORAGE_KEYS.PHOTOS).slice(0,6)
+  if(photoItems.length===0){fp.innerHTML='<div class="media-item"><div class="media-header"><strong>No featured photos yet</strong></div><div class="media-wrapper"><p>Upload photos in the Photos tab to see them here.</p></div></div>'}
+  else{photoItems.forEach(p=>{const d=document.createElement('div');d.className='media-item';d.innerHTML=`<div class="media-header"><strong>${p.name}</strong><span class="type-badge">Photo</span></div><div class="media-wrapper"><img class="media-photo" src="${p.data || p.url}" alt="${p.name}" /></div>`;fp.appendChild(d)})}
+
   const fv=$("#featured-videos");fv.innerHTML=''
-  storage.get(STORAGE_KEYS.VIDEOS).slice(0,3).forEach(v=>{const d=document.createElement('div');d.className='media-item';d.innerHTML=`<div class="media-header"><strong>${v.name}</strong><span class="type-badge">Video</span></div><div class="media-wrapper"><video controls width="100%" src="${v.data || v.url}"></video></div>`;fv.appendChild(d)})
+  const videoItems=storage.get(STORAGE_KEYS.VIDEOS).slice(0,3)
+  if(videoItems.length===0){fv.innerHTML='<div class="media-item"><div class="media-header"><strong>No featured videos yet</strong></div><div class="media-wrapper"><p>Upload videos in the Videos tab to see them here.</p></div></div>'}
+  else{videoItems.forEach(v=>{const d=document.createElement('div');d.className='media-item';d.innerHTML=`<div class="media-header"><strong>${v.name}</strong><span class="type-badge">Video</span></div><div class="media-wrapper"><video controls width="100%" src="${v.data || v.url}"></video></div>`;fv.appendChild(d)})}
 }
 
 function updateStorageItem(key,item){
@@ -277,9 +285,9 @@ function checkoutWhatsApp(){
   if(cart.length===0){alert('Cart is empty');return}
   const items=cart.map(c=>`${c.name} ($${c.price.toFixed(2)})`).join('%0A')
   const total=cart.reduce((s,i)=>s+i.price,0).toFixed(2)
-  const ownerNumber='0780242465'
+  const ownerNumber='+263780242465'
   const msg=`Hello%20Malvin,%0AI%20would%20like%20to%20book%20an%20advert:%0A${items}%0ATotal:%20$${total}%0APlease%20contact%20me.`
-  const digits=ownerNumber.replace(/[^0-9]/g,'')
+  const digits=ownerNumber.replace(/\D/g,'')
   const url=`https://wa.me/${digits}?text=${msg}`
   window.open(url,'_blank')
 }
@@ -301,6 +309,18 @@ function init(){
     const tab=b.dataset.tab
     if(tab) activateTabByName(tab)
   }))
+
+  $('#show-all-music').addEventListener('click',()=>{
+    activateTabByName('listen')
+    const list=$('#music-list')
+    if(list) list.scrollIntoView({behavior:'smooth'})
+  })
+
+  $('#show-all-videos').addEventListener('click',()=>{
+    activateTabByName('videos')
+    const list=$('#video-list')
+    if(list) list.scrollIntoView({behavior:'smooth'})
+  })
 
   // comment and like actions
   document.addEventListener('click',e=>{
